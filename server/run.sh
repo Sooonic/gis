@@ -9,7 +9,7 @@ docker rm -f $(docker ps -f "status=exited" -q) >/dev/null 2>&1;
 docker-compose up -d --remove-orphans
 
 if [ ! -f ./.tmp/composerinit ]; then
-    ./scripts/init.docker.sh
+    docker-compose run php-composer install
     touch ./.tmp/composerinit
 fi
 
