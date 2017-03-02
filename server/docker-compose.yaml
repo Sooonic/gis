@@ -25,6 +25,7 @@ services:
     volumes:
       - ../app/:/app
       - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/logs/php:/var/log/php
 
   php-composer:
     build: docker/php-composer
@@ -47,10 +48,11 @@ services:
     volumes:
       - ./docker/nginx/vhost.conf:/tmp/vhost.conf
       - ../app/:/app
-      - ./docker/nginx/log:/log
+      - ../frontend/:/frontend
+      - ./logs/nginx/:/log
     environment:
-      - FRONTEND_URL=gis.loc
-      - BACKEND_URL=admin.gis.loc
+      - FRONTEND_URL=galamart-is.ru
+      - BACKEND_URL=api.galamart-is.ru
     command: /bin/sh -c "envsubst '$$FRONTEND_URL \n $$BACKEND_URL ' < /tmp/vhost.conf >/etc/nginx/conf.d/vhost.conf && nginx -g 'daemon off;'"
 
   db:

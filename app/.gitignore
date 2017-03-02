@@ -17,7 +17,7 @@ Thumbs.db
 
 # composer vendor dir
 /vendor
-!/vendor/gis/yii
+!/vendor/gis
 
 # composer itself is not needed
 composer.phar
