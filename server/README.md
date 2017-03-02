@@ -1,8 +1,23 @@
-# Развертка окружения на основе Docker контейнеров
+#Развертка окружения на основе Docker контейнеров
 
 Развертка 
 ~~~bash
-./run.sh
+./run.sh && ./init.yii.sh
+~~~
+
+Обновление Composer (После pull) 
+~~~bash
+./composer.sh update
+~~~
+
+Накатывание миграций 
+~~~bash
+./migrate.sh 
+~~~
+
+yii command 
+~~~bash
+./yii.sh "command" 
 ~~~
 
 Остановка 
