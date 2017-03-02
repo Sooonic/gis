@@ -30,6 +30,8 @@ services:
     build: docker/php-composer
     volumes:
       - ../app/:/app
+    command:
+      bash -c "chmod -R 777 /app"
 
   nginx:
     image: nginx:stable-alpine
@@ -44,7 +46,7 @@ services:
       - "php-fpm:172.90.0.2"
     volumes:
       - ./docker/nginx/vhost.conf:/tmp/vhost.conf
-      - ./:/app
+      - ../app/:/app
       - ./docker/nginx/log:/log
     environment:
       - FRONTEND_URL=gis.loc
