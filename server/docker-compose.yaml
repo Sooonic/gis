@@ -13,7 +13,7 @@ services:
       - db:db
       - rabbitmq:rabbitmq
     ports:
-      - 9000:9000
+      - 9002:9002
     networks:
       gis_network:
         ipv4_address: 172.90.0.2
