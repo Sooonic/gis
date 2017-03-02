@@ -1,0 +1,119 @@
+version: '2'
+networks:
+  gis_network:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.90.0.0/16
+
+services:
+  php-fpm:
+    build: docker/php-fpm
+    links:
+      - db:db
+      - rabbitmq:rabbitmq
+    ports:
+      - 9000:9000
+    networks:
+      gis_network:
+        ipv4_address: 172.90.0.2
+    extra_hosts:
+     - "db:172.90.0.3"
+     - "rabbitmq:172.90.0.7"
+     - "memcached1:172.90.1.1"
+     - "memcached2:172.90.1.2"
+    volumes:
+      - ../app/:/app
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+
+  php-composer:
+    build: docker/php-composer
+    volumes:
+      - ../app/:/app
+
+  nginx:
+    image: nginx:stable-alpine
+    links:
+      - php-fpm:fpm
+    ports:
+      - 80:80
+    networks:
+      gis_network:
+        ipv4_address: 172.90.0.4
+    extra_hosts:
+      - "php-fpm:172.90.0.2"
+    volumes:
+      - ./docker/nginx/vhost.conf:/tmp/vhost.conf
+      - ./:/app
+      - ./docker/nginx/log:/log
+    environment:
+      - FRONTEND_URL=gis.loc
+      - BACKEND_URL=admin.gis.loc
+    command: /bin/sh -c "envsubst '$$FRONTEND_URL \n $$BACKEND_URL ' < /tmp/vhost.conf >/etc/nginx/conf.d/vhost.conf && nginx -g 'daemon off;'"
+
+  db:
+    container_name: db
+    restart: always
+    image: sameersbn/postgresql:9.6-2
+    networks:
+      gis_network:
+        ipv4_address: 172.90.0.3
+    ports:
+      - 5432:5432
+    environment:
+      - DEBUG=false
+
+      - DB_USER=dev
+      - DB_PASS=dev
+      - DB_NAME=
+      - DB_TEMPLATE=
+
+      - DB_EXTENSION=
+
+      - REPLICATION_MODE=
+      - REPLICATION_USER=
+      - REPLICATION_PASS=
+      - REPLICATION_SSLMODE=
+    volumes:
+      - db-data:/var/lib/postgresql
+
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    networks:
+      gis_network:
+        ipv4_address: 172.90.0.7
+    build: docker/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  memcached1:
+    container_name: memcached1
+    build: ./docker/memcached
+    networks:
+      gis_network:
+        ipv4_address: 172.90.1.1
+    build: ./docker/memcached
+    ports:
+      - 11211:11211
+    entrypoint:
+      - ./run.sh
+      - "1"
+
+  memcached2:
+    container_name: memcached2
+    build: ./docker/memcached
+    networks:
+      gis_network:
+        ipv4_address: 172.90.1.2
+    build: ./docker/memcached
+    ports:
+      - 11212:11212
+    entrypoint:
+      - ./run.sh
+      - "2"
+
+volumes:
+  db-data:
+    external: true
