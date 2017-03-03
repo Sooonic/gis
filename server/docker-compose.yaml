@@ -67,7 +67,7 @@ services:
 
       - DB_USER=dev
       - DB_PASS=dev
-      - DB_NAME=
+      - DB_NAME=gis
       - DB_TEMPLATE=
 
       - DB_EXTENSION=

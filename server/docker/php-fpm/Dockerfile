@@ -10,8 +10,12 @@ RUN apt-get update \
             libmcrypt-dev \
             zlib1g-dev \
             libpq-dev \
-            gd-dev \
-		    pcre-dev \
+            libz-dev \
+            libjpeg-dev \
+            libpng12-dev \
+            libfreetype6-dev \
+            libicu-dev \
+            libmemcached-dev \
         --no-install-recommends \
 
     # Install PHP extensions
@@ -21,19 +25,23 @@ RUN apt-get update \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install mcrypt \
     && docker-php-ext-install opcache \
-    && docker-php-ext-install memcache \
-    && docker-php-ext-install memcached \
     && docker-php-ext-install gd \
 	&& pecl install apcu-$APCU_VERSION \
 	&& docker-php-ext-enable apcu \
 	&& pecl install apcu_bc-$APCU_BC_VERSION \
-	&& docker-php-ext-enable apc \
 
     # Don't clear our valuable environment vars in PHP
     && echo "\nclear_env = no" >> /usr/local/etc/php-fpm.conf \
 
     # Fix write permissions with shared folders
     && usermod -u 1000 www-data
+
+RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz" \
+    && mkdir -p /usr/src/php/ext/memcached \
+    && tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
+    && docker-php-ext-configure memcached \
+    && docker-php-ext-install memcached \
+    && rm /tmp/memcached.tar.gz
 
 RUN pecl install -o -f xdebug \
     && rm -rf /tmp/pear \
