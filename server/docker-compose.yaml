@@ -31,8 +31,6 @@ services:
     build: docker/php-composer
     volumes:
       - ../app/:/app
-    command:
-      bash -c "chmod -R 777 /app"
 
   nginx:
     image: nginx:stable-alpine

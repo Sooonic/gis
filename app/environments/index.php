@@ -29,13 +29,11 @@
  * ```
  */
 return [
-    'Development' => [
-        'path' => 'dev',
+    'Docker Development' => [
+        'path' => 'docker',
         'setWritable' => [
             'import/runtime',
-            'import/web/assets',
             'api/runtime',
-            'api/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -46,13 +44,11 @@ return [
             'api/config/main-local.php',
         ],
     ],
-    'Docker Development' => [
-        'path' => 'docker',
+    'Development' => [
+        'path' => 'dev',
         'setWritable' => [
             'import/runtime',
-            'import/web/assets',
             'api/runtime',
-            'api/web/assets',
         ],
         'setExecutable' => [
             'yii',
@@ -67,9 +63,7 @@ return [
         'path' => 'prod',
         'setWritable' => [
             'import/runtime',
-            'import/web/assets',
             'api/runtime',
-            'api/web/assets',
         ],
         'setExecutable' => [
             'yii',
