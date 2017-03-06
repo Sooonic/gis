@@ -64,6 +64,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return "sdf";
+        var_dump(\Yii::$app->db->createCommand("CREATE TABLE test (id serial PRIMARY KEY , title VARCHAR(40))")->execute());
     }
 }
