@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=gis',
+            'dsn' => 'pgsql:host=db;dbname=gis',
             'username' => 'dev',
             'password' => 'dev',
             'charset' => 'utf8',
