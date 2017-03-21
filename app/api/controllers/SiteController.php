@@ -1,69 +1,48 @@
 <?php
 namespace api\controllers;
 
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
-use yii\web\Controller;
+use api\forms\site\LoginForm;
+use api\models\Test;
+use Yii;
+use yii\rest\Controller;
+use yii\web\ServerErrorHttpException;
 
-/**
- * Site controller
- */
 class SiteController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
+
+    public $modelClass = '';
 
     /**
      * @inheritdoc
      */
-    public function actions()
+    protected function verbs()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
+            'login' => ['POST'],
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return mixed
-     */
-    public function actionIndex()
+    public function init()
     {
-        var_dump(\Yii::$app->db->createCommand("CREATE TABLE test (id serial PRIMARY KEY , title VARCHAR(40))")->execute());
+        $this->modelClass = Test::className();
+        parent::init();
+    }
+
+    public function actionLogin()
+    {
+        $model = new LoginForm();
+        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        if ($model->login() === false) {
+            if (!$model->hasErrors()) {
+                throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
+            }
+            Yii::$app->response->dataErrors = $model->getErrors();
+            Yii::$app->response->setStatusCode(400);
+            return [];
+        }
+
+        return [
+            'token' => $model->getUser()->getAuthKey(),
+        ];
     }
 }
