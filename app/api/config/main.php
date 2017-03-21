@@ -9,14 +9,30 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        [
+            'class' => 'yii\filters\ContentNegotiator',
+            'formats' => [
+                'application/json' => \gis\yii\web\Response::FORMAT_JSON,
+                'application/xml' => \gis\yii\web\Response::FORMAT_XML,
+            ],
+        ],
+    ],
     'controllerNamespace' => 'api\controllers',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
+        'response' => [
+            'class' => 'gis\yii\web\Response',
+        ],
+        'errorHandler' => [
+            'class' => 'gis\yii\rest\RESTErrorHandler',
+            'errorAction' => 'site/error',
+        ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'gis\yii\user\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -32,9 +48,6 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,

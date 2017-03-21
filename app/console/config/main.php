@@ -15,7 +15,15 @@ return [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
-          ],
+        ],
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@console/migrations',
+            'migrationNamespaces' => [
+                'gis\yii\rbac\migrations',
+                'gis\yii\user\migrations',
+            ],
+        ],
     ],
     'components' => [
         'log' => [

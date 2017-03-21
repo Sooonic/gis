@@ -23,4 +23,6 @@ else
     echo "${red}$count from $mustcount containers are running. Use 'docker ps' for more details.";
 fi
 
+cd ../ && sudo chown -R "$USER":"$USER" .
+
 exit 0

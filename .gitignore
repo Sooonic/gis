@@ -15,9 +15,6 @@ nbproject
 # windows thumbnail cache
 Thumbs.db
 
-# composer vendor dir
-/vendor
-
 # composer itself is not needed
 composer.phar
 
@@ -32,3 +29,16 @@ phpunit.phar
 # vagrant runtime
 /.vagrant
 
+.gitignore
+.idea/
+app/api/web/assets/
+server/docker/logs/
+api/web/assets/
+vendor/gis/yii/base/
+vendor/gis/yii/rest/Action.php
+vendor/gis/yii/rest/CreateAction.php
+vendor/gis/yii/rest/DeleteAction.php
+vendor/gis/yii/rest/IndexAction.php
+vendor/gis/yii/rest/OptionsAction.php
+vendor/gis/yii/rest/UpdateAction.php
+vendor/gis/yii/rest/ViewAction.php
